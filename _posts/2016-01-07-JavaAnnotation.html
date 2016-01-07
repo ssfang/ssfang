@@ -1,0 +1,97 @@
+---
+layout: default
+title: my first post
+---
+<h1>Java Annotation</h1>
+      <div class="highlight highlight-source-java"><pre><span class="pl-k">import</span> <span class="pl-smi">java.lang.annotation.ElementType</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.lang.annotation.Retention</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.lang.annotation.RetentionPolicy</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.lang.annotation.Target</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.Arrays</span>;
+
+@SuppressWarnings(<span class="pl-s"><span class="pl-pds">"</span>unused<span class="pl-pds">"</span></span>)
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ModelTest</span> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) {
+        printColumnUnique(<span class="pl-smi">InvalidUniqueModel1</span><span class="pl-k">.</span>class);
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println();
+        printColumnUnique(<span class="pl-smi">InvalidUniqueModel2</span><span class="pl-k">.</span>class);
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println();
+        printColumnUnique(<span class="pl-smi">SingleUniqueModel</span><span class="pl-k">.</span>class);
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println();
+        printColumnUnique(<span class="pl-smi">MultiUniqueModel</span><span class="pl-k">.</span>class);
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">printColumnUnique</span>(<span class="pl-k">Class&lt;?&gt;</span> <span class="pl-v">clz</span>) {
+        <span class="pl-smi">ColumnUnique</span> columnUnique <span class="pl-k">=</span> clz<span class="pl-k">.</span>getAnnotation(<span class="pl-smi">ColumnUnique</span><span class="pl-k">.</span>class);
+        <span class="pl-smi">String</span> name <span class="pl-k">=</span> <span class="pl-smi">columnUnique<span class="pl-k">.</span>Name</span>();
+        <span class="pl-k">String</span>[] columns <span class="pl-k">=</span> <span class="pl-smi">columnUnique<span class="pl-k">.</span>Columns</span>();
+
+        <span class="pl-k">if</span> (name <span class="pl-k">!=</span> <span class="pl-smi">columnUnique<span class="pl-k">.</span>Name</span>()) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>两次获取注解字段Name的对象（字符串）不是同一个<span class="pl-pds">"</span></span>);
+        }
+        <span class="pl-k">if</span> (columns <span class="pl-k">!=</span> <span class="pl-smi">columnUnique<span class="pl-k">.</span>Columns</span>()) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>两次获取注解字段Columns的对象（字符串数组）不是同一个<span class="pl-pds">"</span></span>);
+        }
+
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>Name@<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>toHexString(name<span class="pl-k">.</span>hashCode()) <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> =  <span class="pl-cce">\"</span><span class="pl-pds">"</span></span> <span class="pl-k">+</span> name <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\"</span><span class="pl-pds">"</span></span>);
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>Columns@<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>toHexString(columns<span class="pl-k">.</span>hashCode()) <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> = <span class="pl-pds">"</span></span>
+                <span class="pl-k">+</span> <span class="pl-smi">Arrays</span><span class="pl-k">.</span>toString(columns));
+
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>columnUnique = <span class="pl-pds">"</span></span> <span class="pl-k">+</span> columnUnique);
+    }
+
+    <span class="pl-k">@Target</span>(<span class="pl-smi">ElementType</span><span class="pl-c1"><span class="pl-k">.</span>TYPE</span>)
+    <span class="pl-k">@Retention</span>(<span class="pl-smi">RetentionPolicy</span><span class="pl-c1"><span class="pl-k">.</span>RUNTIME</span>)
+    <span class="pl-k">public</span> <span class="pl-k">@interface</span> <span class="pl-en">ColumnUnique</span> {
+        <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">Name</span>() default "";
+
+        <span class="pl-k">public</span> <span class="pl-k">String</span>[] <span class="pl-en">Columns</span>() default ""; <span class="pl-c">// ""和{}代表一个意思</span>
+
+        <span class="pl-k">public</span> <span class="pl-k">String</span>[] <span class="pl-en">Columns2</span>() default {}; <span class="pl-c">// {}和""代表一个意思</span>
+
+        <span class="pl-k">public</span> <span class="pl-k">int</span>[] <span class="pl-en">Ints</span>() default {}; <span class="pl-c">// 必须是{}</span>
+
+        <span class="pl-c">// 名为value的属性，在注解时只必须设置一个属性时可以不使用键=值（value=xx）形式直接@ColumnUnique("22")</span>
+        <span class="pl-c">// 注解行为@XXAnnotation(xx)时默认是为value属性设置值</span>
+        <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">value</span>() default "";
+    }
+
+    <span class="pl-k">@ColumnUnique</span>()
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">InvalidUniqueModel1</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Long</span> id;
+        <span class="pl-k">private</span> <span class="pl-k">long</span> time;
+        <span class="pl-k">private</span> <span class="pl-smi">String</span> str;
+        <span class="pl-k">private</span> <span class="pl-k">byte</span>[] digest;
+        <span class="pl-k">private</span> <span class="pl-smi">Object</span> reserved;
+    }
+
+    <span class="pl-k">@ColumnUnique</span>(<span class="pl-c1">Columns</span> <span class="pl-k">=</span> {})
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">InvalidUniqueModel2</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Long</span> id;
+        <span class="pl-k">private</span> <span class="pl-k">long</span> time;
+        <span class="pl-k">private</span> <span class="pl-smi">String</span> str;
+        <span class="pl-k">private</span> <span class="pl-k">byte</span>[] digest;
+        <span class="pl-k">private</span> <span class="pl-smi">Object</span> reserved;
+    }
+
+    <span class="pl-k">@ColumnUnique</span>(<span class="pl-c1">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>uid<span class="pl-pds">"</span></span>, <span class="pl-c1">Columns</span> <span class="pl-k">=</span> { <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span> })
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">SingleUniqueModel</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Long</span> id;
+        <span class="pl-k">private</span> <span class="pl-k">long</span> time;
+        <span class="pl-k">private</span> <span class="pl-smi">String</span> str;
+        <span class="pl-k">private</span> <span class="pl-k">byte</span>[] digest;
+        <span class="pl-k">private</span> <span class="pl-smi">Object</span> reserved;
+    }
+
+    <span class="pl-k">@ColumnUnique</span>(<span class="pl-c1">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>uid<span class="pl-pds">"</span></span>, <span class="pl-c1">Columns</span> <span class="pl-k">=</span> { <span class="pl-s"><span class="pl-pds">"</span>mod<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span> })
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">MultiUniqueModel</span> {
+        <span class="pl-k">private</span> <span class="pl-k">int</span> mod;
+        <span class="pl-k">private</span> <span class="pl-smi">Long</span> id;
+        <span class="pl-k">private</span> <span class="pl-k">long</span> time;
+        <span class="pl-k">private</span> <span class="pl-smi">String</span> str;
+        <span class="pl-k">private</span> <span class="pl-k">byte</span>[] digest;
+        <span class="pl-k">private</span> <span class="pl-smi">Object</span> reserved;
+    }
+}
+</pre></div>
+<a href="/index.html">Go back</a>
